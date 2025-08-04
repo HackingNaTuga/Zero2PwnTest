@@ -1,4 +1,4 @@
-# Enumeration and Footprinting
+# Enumeration and Footprinting (Infra)
 
 Enumeration is a widely used term in cyber security. It stands for information gathering using active (scans) and passive (use of third-party providers) methods. It is important to note that OSINT is an independent procedure and should be performed separately from enumeration because OSINT is based exclusively on passive information gathering and does not involve active enumeration of the given target. Enumeration is a loop in which we repeatedly gather information based on what data we have or have already discovered.
 
