@@ -14,7 +14,7 @@ Simple, straight to the point, and useful for pentest, labs, CTFs, and certifica
 ## 🧠 Contents
 
 ### 🔍 Enumeration
-- User & service discovery
+- User, Host & service discovery
 
 ### 🐧 Linux
 - Useful enumeration commands
