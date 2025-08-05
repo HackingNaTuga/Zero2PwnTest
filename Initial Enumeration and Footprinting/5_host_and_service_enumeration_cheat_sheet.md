@@ -205,7 +205,7 @@ EXECUTE sp_configure 'show advanced options', 1
 RECONFIGURE
 EXECUTE sp_configure 'xp_cmdshell', 1
 RECONFIGURE
-if we are using impacket-mssqlclient just do and the tools automatic execute last commands:
+If you are using impacket-mssqlclient, just run the following command and tools will automatically execute the previous commands to activate xp_cmdshell:
 > enable_xp_cmdshell
 ----------------------------------------------------------------------------------
 Write a file
