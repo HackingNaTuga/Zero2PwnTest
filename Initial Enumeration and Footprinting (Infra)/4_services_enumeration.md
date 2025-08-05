@@ -92,6 +92,7 @@ Access rights are defined by Access Control Lists (ACL). They can be controlled 
 ````
 $ cat /etc/samba/smb.conf | grep -v "#\|\;"
 ````
+
 |         SETTING          |                                 DESCRIPTION                                 |
 |:------------------------:|:---------------------------------------------------------------------------:|
 | [sharename]              | The name of the network share.                                              |
@@ -106,7 +107,9 @@ $ cat /etc/samba/smb.conf | grep -v "#\|\;"
 | read only = yes          | Allow users to read files only?                                             |
 | create mask = 0700       | What permissions need to be set for newly created files?                    |
 
+
 **Dangerous Settings**
+
 In that case, we will see what advantages and disadvantages the settings bring with them.
 
 |         SETTING          |                                  DESCRIPTION                                   |
@@ -123,6 +126,7 @@ In that case, we will see what advantages and disadvantages the settings bring w
 | magic output = script.out| Where the output of the magic script needs to be stored?                      |
 
 **SMBclient - Connecting to the Share**
+
 Now we can display a list (-L) of the server's shares with the smbclient command from our host. We use the so-called null session (-N), which is anonymous access without the input of existing users or valid passwords.
 ````
 $ smbclient -N -L //10.129.14.128
@@ -154,6 +158,7 @@ The Remote Procedure Call (RPC) is a concept and, therefore, also a central tool
 ````
 $ rpcclient -U "" 10.129.14.128
 ````
+
 |        QUERY         |                                 DESCRIPTION                                  |
 |:--------------------:|:----------------------------------------------------------------------------:|
 | srvinfo              | Server information.                                                         |
@@ -254,7 +259,9 @@ There are several types of DNS servers that are used worldwide:
 | Caching DNS Server        | Caching DNS servers cache information from other name servers for a specified period. The authoritative name server determines the duration of this storage.                                                       |
 | Forwarding Server         | Forwarding servers perform only one function: they forward DNS queries to another DNS server.                                                                                                                      |
 | Resolver                  | Resolvers are not authoritative DNS servers but perform name resolution locally in the computer or router.                                                                                                         |
+
 Different DNS records are used for the DNS queries, which all have various tasks. Moreover, separate entries exist for different functions since we can set up mail servers and other servers for a domain.
+
 
 | DNS RECORD |                                                                                                      DESCRIPTION                                                                                                       |
 |:----------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
@@ -266,6 +273,7 @@ Different DNS records are used for the DNS queries, which all have various tasks
 | CNAME      | This record serves as an alias for another domain name. If you want the domain www.hackthebox.eu to point to the same IP as hackthebox.eu, you would create an A record for hackthebox.eu and a CNAME record for www.hackthebox.eu. |
 | PTR        | The PTR record works the other way around (reverse lookup). It converts IP addresses into valid domain names.                                                                    |
 | SOA        | Provides information about the corresponding DNS zone and email address of the administrative contact.                                                                           |
+
 **Default Configuration**
 All DNS servers work with three different types of configuration files:
 
@@ -381,3 +389,270 @@ $ sudo nmap 10.129.14.128 -p25 --script smtp-open-relay -v
 ````
 
 ## IMAP / POP3
+
+With the help of the Internet Message Access Protocol (IMAP), access to emails from a mail server is possible. Unlike the Post Office Protocol (POP3), IMAP allows online management of emails directly on the server and supports folder structures. Thus, it is a network protocol for the online management of emails on a remote server.
+
+**IMAP Commands**
+
+|         COMMAND          |                                                                                   DESCRIPTION                                                                                   |
+|:------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| 1 LOGIN username password | User's login.                                                                                                                                                                     |
+| 1 LIST "" *              | Lists all directories.                                                                                                                                                            |
+| 1 CREATE "INBOX"         | Creates a mailbox with a specified name.                                                                                                                                          |
+| 1 DELETE "INBOX"         | Deletes a mailbox.                                                                                                                                                                |
+| 1 RENAME "ToRead" "Important" | Renames a mailbox.                                                                                                                                                          |
+| 1 LSUB "" *              | Returns a subset of names from the set of names that the User has declared as being active or subscribed.                                                                        |
+| 1 SELECT INBOX           | Selects a mailbox so that messages in the mailbox can be accessed.                                                                                                                |
+| 1 UNSELECT INBOX         | Exits the selected mailbox.                                                                                                                                                       |
+| 1 FETCH <ID> all         | Retrieves data associated with a message in the mailbox.                                                                                                                          |
+| 1 CLOSE                  | Removes all messages with the Deleted flag set.                                                                                                                                   |
+| 1 LOGOUT                 | Closes the connection with the IMAP server.                                                                                                                                       |
+
+**POP3 Commands**
+
+|     COMMAND     |                                                      DESCRIPTION                                                      |
+|:---------------:|:----------------------------------------------------------------------------------------------------------------------:|
+| USER username   | Identifies the user.                                                                                                  |
+| PASS password   | Authentication of the user using its password.                                                                        |
+| STAT            | Requests the number of saved emails from the server.                                                                  |
+| LIST            | Requests from the server the number and size of all emails.                                                            |
+| RETR id         | Requests the server to deliver the requested email by ID.                                                              |
+| DELE id         | Requests the server to delete the requested email by ID.                                                               |
+| CAPA            | Requests the server to display the server capabilities.                                                                |
+| RSET            | Requests the server to reset the transmitted information.                                                              |
+| QUIT            | Closes the connection with the POP3 server.                                                                            |
+
+**Dangerous Settings**
+
+Nevertheless, configuration options that were improperly configured could allow us to obtain more information, such as debugging the executed commands on the service or logging in as anonymous, similar to the FTP service.
+|         SETTING         |                                                                              DESCRIPTION                                                                               |
+|:-----------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| auth_debug              | Enables all authentication debug logging.                                                                                                                             |
+| auth_debug_passwords    | This setting adjusts log verbosity, the submitted passwords, and the scheme gets logged.                                                                               |
+| auth_verbose            | Logs unsuccessful authentication attempts and their reasons.                                                                                                           |
+| auth_verbose_passwords  | Passwords used for authentication are logged and can also be truncated.                                                                                                |
+| auth_anonymous_username | This specifies the username to be used when logging in with the ANONYMOUS SASL mechanism.                                                                              |
+
+### Footprinting the Service
+By default, ports 110 and 995 are used for POP3, and ports 143 and 993 are used for IMAP. The higher ports (993 and 995) use TLS/SSL to encrypt the communication between the client and server.
+````
+$ sudo nmap 10.129.14.128 -sV -p110,143,993,995 -sC
+````
+**cURL**
+````
+$ curl -k 'imaps://10.129.14.128' --user user:p4ssw0rd
+
+* LIST (\HasNoChildren) "." Important
+* LIST (\HasNoChildren) "." INBOX
+````
+**OpenSSL - TLS Encrypted Interaction POP3**
+````
+$ openssl s_client -connect 10.129.14.128:pop3s
+````
+**OpenSSL - TLS Encrypted Interaction IMAP**
+````
+$ openssl s_client -connect 10.129.14.128:imaps
+````
+
+## SNMP
+
+Simple Network Management Protocol (SNMP) was created to monitor network devices. In addition, this protocol can also be used to handle configuration tasks and change settings remotely. SNMP-enabled hardware includes routers, switches, servers, IoT devices, and many other devices that can also be queried and controlled using this standard protocol. SNMP also transmits control commands using agents over UDP port 161.
+
+**MIB**
+
+A MIB is a text file in which all queryable SNMP objects of a device are listed in a standardized tree hierarchy. It contains at least one Object Identifier (OID), which, in addition to the necessary unique address and a name, also provides information about the type, access rights, and a description of the respective object.
+
+**OID**
+
+An OID represents a node in a hierarchical namespace. A sequence of numbers uniquely identifies each node, allowing the node's position in the tree to be determined. 
+
+**Community Strings**
+
+Community strings can be seen as passwords that are used to determine whether the requested information can be viewed or not. 
+
+**Default Configuration**
+````
+$ cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
+````
+
+**Dangerous Settings**
+|         SETTINGS         |                                                                                   DESCRIPTION                                                                                   |
+|:------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| rwuser noauth            | Provides access to the full OID tree without authentication.                                                                                                                   |
+| rwcommunity <community string> <IPv4 address>  | Provides access to the full OID tree regardless of where the requests were sent from.                                                                         |
+| rwcommunity6 <community string> <IPv6 address> | Same access as with rwcommunity with the difference of using IPv6.                                                                                               |
+
+### Footprinting the Service
+
+**SNMPwalk**
+````
+$ snmpwalk -v2c -c public 10.129.14.128
+````
+**OneSixtyOne**
+````
+$ sudo apt install onesixtyone
+$ onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt 10.129.14.128
+````
+**Braa**
+````
+$ sudo apt install braa
+$ braa <community string>@<IP>:.1.3.6.*   # Syntax
+$ braa public@10.129.14.128:.1.3.6.*
+````
+
+## MySQL
+
+MySQL is an open-source SQL relational database management system developed and supported by Oracle. A database is simply a structured collection of data organized for easy use and retrieval. 
+
+**Default Configuration**
+````
+$ cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'
+````
+**Dangerous Settings**
+|     SETTINGS     |                                                                                   DESCRIPTION                                                                                   |
+|:----------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| user             | Sets which user the MySQL service will run as.                                                                                                                                |
+| password         | Sets the password for the MySQL user.                                                                                                                                         |
+| admin_address    | The IP address on which to listen for TCP/IP connections on the administrative network interface.                                                                             |
+| debug            | This variable indicates the current debugging settings                                                                                                                        |
+| sql_warnings     | This variable controls whether single-row INSERT statements produce an information string if warnings occur.                                                                  |
+| secure_file_priv | This variable is used to limit the effect of data import and export operations.                                                                                                |
+
+### Footprinting the Service
+
+**Scanning MySQL Server**
+````
+$ sudo nmap 10.129.14.128 -sV -sC -p3306 --script mysql*
+````
+**Connect to MySql Server**
+````
+$ mysql -u User -p -h IP
+````
+
+| Command | Descripton |
+|:--------:|:----------:|
+| mysql -u user -p password -h IP_address | Connect to the MySQL server. There should not be a space between the '-p' flag, and the password.|
+| show databases; | Show all databases. |
+| use database; | Select one of the existing databases.|
+| show tables; | Show all available tables in the selected database.|
+| show columns from table; | Show all columns in the selected table.|
+| select * from table; | Show everything in the desired table.|
+| select * from table where column = "string"; | Search for needed string in the desired table. |
+
+## MSSQL
+
+Microsoft SQL (MSSQL) is Microsoft's SQL-based relational database management system.
+
+**MSSQL Clients**
+| mssql-cli | SQL Server PowerShell | HeidiSQL | SQLPro | Impacket's mssqlclient.py | SQL Server Management Studio |
+|-----------|------------------------|----------|--------|----------------------------|----------------------------|
+
+**MSSQL Databases**
+| Default System Database | Description |
+|-----------------------------|-----------------|
+| master                     | Tracks all system information for an SQL server instance |
+| model                      | Template database that acts as a structure for every new database created. Any setting changed in the model database will be reflected in any new database created after changes to the model database |
+| msdb                       | The SQL Server Agent uses this database to schedule jobs & alerts |
+| tempdb                     | Stores temporary objects |
+| resource                   | Read-only database containing system objects included with SQL server |
+
+### Footprinting the Service
+
+**NMAP**
+````
+$ sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 10.129.201.248
+````
+**Metasploit**
+````
+msf6 auxiliary(scanner/mssql/mssql_ping)
+````
+**Connecting with Mssqlclient.py**
+````
+$ python3 mssqlclient.py <USER>@<IP> -windows-auth
+$ impacket-mssqlclient <USER>@<IP> -windows-auth
+$ impacket-mssqlclient DOMAIN/<USER>@<IP> 
+````
+
+## Oracle TNS
+
+The Oracle Transparent Network Substrate (TNS) server is a communication protocol that facilitates communication between Oracle databases and applications over networks. 
+Each database or service has a unique entry in the tnsnames.ora file, containing the necessary information for clients to connect to the service. The entry consists of a name for the service, the network location of the service, and the database or service name that clients should use when connecting to the service. 
+On the other hand, the listener.ora file is a server-side configuration file that defines the listener process's properties and parameters, which is responsible for receiving incoming client requests and forwarding them to the appropriate Oracle database instance.
+
+### Footprint the service
+**NMAP**
+````
+$ sudo nmap -p1521 -sV 10.129.204.235 --open
+````
+**SID Bruteforcing**
+````
+$ sudo nmap -p1521 -sV 10.129.204.235 --open --script oracle-sid-brute
+````
+We can use the odat.py tool to perform a variety of scans to enumerate and gather information about the Oracle database services and its components. 
+````
+$ ./odat.py all -s 10.129.204.235
+````
+**SQLplus - Log In**
+````
+$ sqlplus scott/tiger@10.129.204.235/<SID>
+````
+**Oracle RDBMS - Interaction**
+````
+SQL> select table_name from all_tables;
+SQL> select * from user_role_privs;
+````
+**Oracle RDBMS - Database Enumeration**
+````
+$ sqlplus <USER>/<PASS>@<IP>/<SID> as sysdba
+SQL> select * from user_role_privs;
+````
+**Oracle RDBMS - Extract Password Hashes**
+````
+SQL> select name, password from sys.user$;
+````
+**Oracle RDBMS - File Upload**
+````
+$ echo "Oracle File Upload Test" > testing.txt
+$ ./odat.py utlfile -s 10.129.204.235 -d <SID> -U <USER> -P <PASS> --sysdba --putFile C:\\inetpub\\wwwroot testing.txt ./testing.txt
+````
+ODAT Setup
+````
+https://github.com/quentinhardy/odat/releases
+sudo apt-get install alien
+get basic and sqlplus .rpm https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
+sudo alien -i oracle-instantclient-basic-23.8.0.25.04-1.el9.x86_64.rpm
+sudo alien -i oracle-instantclient-sqlplus-23.8.0.25.04-1.el9.x86_64.rpm
+sudo sh -c "echo /usr/lib/oracle/23/client64/lib > /etc/ld.so.conf.d/oracle-instantclient.conf";sudo ldconfig
+./odat-libc2.17-x86_64 all -s <IP> 
+````
+
+## IPMI
+
+Intelligent Platform Management Interface (IPMI) is a set of standardized specifications for hardware-based host management systems used for system management and monitoring. It acts as an autonomous subsystem and works independently of the host's BIOS, CPU, firmware, and underlying operating system.
+
+### Footprinting the Service
+
+**NMAP**
+````
+$ sudo nmap -sU --script ipmi-version -p 623 <IP>
+````
+During internal penetration tests, we often find BMCs where the administrators have not changed the default password. Some unique default passwords to keep in our cheatsheets include:
+| Product          | Username   | Password                                               |
+|:------------------------:|:----------------:|:-------------------------------------------------------------:|
+| Dell iDRAC             | root           | calvin                                                      |
+| HP iLO                 | Administrator  | randomized 8-character string consisting of numbers and uppercase letters |
+| Supermicro IPMI        | ADMIN          | ADMIN                                                       |
+
+**Metasploit Dumping Hashes**
+````
+msf6 > use auxiliary/scanner/ipmi/ipmi_dumphashes 
+msf6 auxiliary(scanner/ipmi/ipmi_dumphashes) > set rhosts <IP>
+msf6 auxiliary(scanner/ipmi/ipmi_dumphashes) > run
+````
+**Crack Hash**
+````
+echo "a0a113d8820000005cd66e:6f9686237cad0f01033f11247abafb272d888fe6" > hash2
+hashcat hash2 /usr/share/wordlists/rockyou.txt
+````
+
+
