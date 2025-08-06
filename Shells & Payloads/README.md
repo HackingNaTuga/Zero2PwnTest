@@ -1,8 +1,9 @@
 # Reverse Shells & Web Shells
 
-Este repositório tem como objetivo abordar e organizar algumas técnicas relacionadas a **reverse shells**, **web shells** e métodos similares utilizados em contextos de **pentest** e **red team**.
+This repository aims to cover and organize various techniques related to **reverse shells**, **web shells**, and similar methods commonly used in **pentesting** and **red team** operations.
 
-## Conteúdo
+## Contents
 
-- Exemplos de reverse shells (bash, PHP, Python, PowerShell, etc.)
-- Web shells em diferentes linguagens
+- Examples of reverse shells (bash, PHP, Python, PowerShell, etc.)
+- Web shells in different languages
+
