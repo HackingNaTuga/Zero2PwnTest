@@ -126,3 +126,5 @@ if (request.getParameter("cmd") != null) {
 ````
 
 **In the shell folder, we have several web shells for different technologies.**
+
+backup.war contains the webshell cmd.jsp. When you upload the war file and access it, just search for /backup/cmd.jsp?cmd=id
