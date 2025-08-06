@@ -27,6 +27,11 @@ $ netexec smb <IP>/24 -u <usernames.list> -p 'ChangeMe123!'
 $ kerbrute passwordspray -d test.local domain_users.txt password123
 ````
 
+**Enumerate Valid Users**
+````
+$ ./kerbrute_linux_amd64 userenum --dc <IP> --domain <domain> <list_of_users>
+````
+
 **Credential Stuffing**
 
 https://github.com/ihebski/DefaultCreds-cheat-sheet
