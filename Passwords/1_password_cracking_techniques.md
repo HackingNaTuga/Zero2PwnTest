@@ -154,6 +154,13 @@ We specify some parameters, like the depth to spider (-d), the minimum length of
 
 **Tool: cupp**
 
+**Create custom list of usernames**
+````
+https://github.com/urbanadventurer/username-anarchy
+$ ./username-anarchy -i /home/ltnbob/names.txt 
+$ ./username-anarchy <firt_name> <last_name>
+````
+
 ## Protected Files
 
 One way to tell whether an SSH key is encrypted or not, is to try reading the key with ssh-keygen.
