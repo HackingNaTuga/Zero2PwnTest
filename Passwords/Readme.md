@@ -12,7 +12,7 @@ This repository is dedicated to techniques and tools used in **password discover
 - Sensitive information in Windows registry, config files, and plaintext passwords in memory.
 
 ### 🔐 Password Cracking
-- Offline password cracking using tools like `John the Ripper` and `Hashcat`.
+- Offline password cracking using tools like `John the Ripper`, `Hashcat` and `hydra`.
 - Wordlist and ruleset strategies.
 - Cracking Windows hashes (NTLM, LM, etc.) and Linux hashes (MD5, SHA, bcrypt, etc.).
 - PasswordManagers Cracking
