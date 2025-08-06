@@ -247,6 +247,12 @@ $ rdesktop <IP> -d <domain> -u <user> -p '<password>' -r disk:linux='<directory>
 $ xfreerdp /v:<IP> /d:<domain> /u:<user> /p:'<password>' /drive:linux,<directory>
 ````
 
+**Evil-Winrm**
+````
+> evil-winrm shell -> upload <file_to_upload_local>
+> evil-winrm shell -> download <file_to_download> <directory_to_save_opticional>
+````
+
 ## Living off The Land
 
 **Upload win.ini to our Pwnbox**
