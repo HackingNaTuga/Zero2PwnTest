@@ -6,6 +6,7 @@ $ nmap 192.168.1.1/24 -sn
 $ nmap 192.168.1.1/24 -Pn
 $ [msf](Jobs:0 Agents:1) post(multi/manage/autoroute) >> use post/multi/gather/ping_sweep
 $ for i in $(seq 254); do ping 172.16.8.$i -c1 -W1 & done | grep from
+$ for i in {1..254} ;do (ping -c 1 172.16.5.$i | grep "bytes from" &) ;done
 $ fping -asgq 172.16.5.0/23
 $ arp-scan 192.168.1.0/24
 $ for /L %i in (1 1 254) do ping 172.16.5.%i -n 1 -w 100 | find "Reply" (Windows cmd)
