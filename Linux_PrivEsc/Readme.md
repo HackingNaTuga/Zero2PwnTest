@@ -5,7 +5,7 @@ The goal is to help identify attack vectors, from the initial reconnaissance pha
 
 ---
 
--  Information Gathering**
+-  Information Gathering
 -  Environment-based Privilege Escalation
 -  Permissions-based Privilege Escalation
 -  Service-based Privilege Escalation
