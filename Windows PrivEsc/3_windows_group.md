@@ -257,6 +257,8 @@ static bool LaunchShell()
 # TCHAR CommandLine[] = TEXT("C:\\ProgramData\\revshell.exe"); -> This could be msfvenom revshell
 # Compile
 cl /DUNICODE /D_UNICODE ExploitCapcom.cpp
+
+https://github.com/tandasat/ExploitCapcom
 ````
 **Automating the Steps**
 
