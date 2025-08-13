@@ -194,7 +194,7 @@ If you cannot see who the owner of the file is, we can see who the owner of the 
 > Get-ChildItem -Path 'C:\Department Shares\Private\IT\cred.txt' | select name,directory, @{Name="Owner";Expression={(Get-ACL $_.Fullname).Owner}}
 
 # Modifying the File ACL
-> icacls 'C:\Department Shares\Private\IT\cred.txt' /grant htb-student:F
+> icacls 'C:\Department Shares\Private\IT\cred.txt' /grant <user>:F
 ````
 **Files of Interest**
 - c:\inetpub\wwwwroot\web.config
