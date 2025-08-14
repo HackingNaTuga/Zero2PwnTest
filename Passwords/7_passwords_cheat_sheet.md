@@ -362,6 +362,16 @@ Open with DB Browser for SQLite
 > $db = 'C:\Users\<user>\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState\plum.sqlite'
 > Invoke-SqliteQuery -Database $db -Query "SELECT Text FROM Note" | ft -wrap
 ````
+
+**User/Computer Description Field**
+````
+# Checking Local User Description Field
+> Get-LocalUser
+
+# Enumerating Computer Description Field with Get-WmiObject Cmdlet
+> Get-WmiObject -Class Win32_OperatingSystem | select Description
+````
+
 **Wifi Passwords**
 ````
 > netsh wlan show profile
