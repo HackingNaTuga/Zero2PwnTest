@@ -35,7 +35,7 @@
 - ACL Abuse Tactics
 - DCSync
 
-### Privilege Escalation
+### Privilege Access
 - Privileged Access
 - Kerberos "Double Hop" Problem
 - Bleeding Edge Vulnerabilities
