@@ -174,6 +174,7 @@ $> enumdomusers
 ````bash
 $ nxc smb <DC_IP> --users
 $ nxc smb <DC_IP> -u '' -p '' --users
+$ nxc smb <DC_IP> -u '' -p '' --rid-brute
 
 # Valid Credentials
 $ sudo crackmapexec smb <DC_IP> -u <user> -p <password> --users
